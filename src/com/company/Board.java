@@ -76,7 +76,7 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 10, true, false, false, true);
 
-        setManualBordure(grille, listCase, 34, false, true, false, true);
+        setManualBordure(grille, listCase, 34, false, true, false, false);
 
         setManualBordure(grille, listCase, 35, false, false, true, false);
 
@@ -84,11 +84,15 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 46, false, true, false, false);
 
+        setManualBordure(grille, listCase, 49, false, false, true, false);
+
         setManualBordure(grille, listCase, 50, true, false, false, true);
 
         setManualBordure(grille, listCase, 52, false, false, false, true);
 
         setManualBordure(grille, listCase, 62, false, false, true, true);
+
+        setManualBordure(grille, listCase, 63, true, false, true, false);
 
         setManualBordure(grille, listCase, 67, false, true, false, false);
 
@@ -104,9 +108,11 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 83, false, false, true, true);
 
+        setManualBordure(grille, listCase, 84, true, false, false, false);
+
         setManualBordure(grille, listCase, 85, false, false, false, true);
 
-        setManualBordure(grille, listCase, 88, false, false, false, true);
+        setManualBordure(grille, listCase, 89, false, false, false, true);
 
         setManualBordure(grille, listCase, 93, false, true, false, false);
 
@@ -126,9 +132,9 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 118, false, false, true, false);
 
-        setManualBordure(grille, listCase, 119, true, true, true, true);
+        setManualBordure(grille, listCase, 119, true, false, false, true);
 
-        setManualBordure(grille, listCase, 120, true, true, true, true);
+        setManualBordure(grille, listCase, 120, false, false, true, true);
 
         setManualBordure(grille, listCase, 121, true, false, false, false);
 
@@ -138,9 +144,9 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 134, false, false, true, false);
 
-        setManualBordure(grille, listCase, 135, true, true, true, true);
+        setManualBordure(grille, listCase, 135, true, true, false, false);
 
-        setManualBordure(grille, listCase, 136, true, true, true, true);
+        setManualBordure(grille, listCase, 136, false, true, true, false);
 
         setManualBordure(grille, listCase, 137, true, false, false, false);
 
@@ -168,6 +174,8 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 169, false, true, true, false);
 
+        setManualBordure(grille, listCase, 170, true, false, false, false);
+
         setManualBordure(grille, listCase, 175, false, true, true, false);
 
         setManualBordure(grille, listCase, 176, true, true, false, false);
@@ -193,6 +201,8 @@ public class Board extends Application {
         setManualBordure(grille, listCase, 213, false, true, false, false);
 
         setManualBordure(grille, listCase, 215, false, false, true, true);
+
+        setManualBordure(grille, listCase, 216, true, false, false, false);
 
         setManualBordure(grille, listCase, 219, false, false, true, true);
 
@@ -228,7 +238,7 @@ public class Board extends Application {
         rectangle.setWidth(35);
         rectangle.setHeight(35);
 
-        BorderStroke borderStroke = new BorderStroke(Color.GREY, BorderStrokeStyle.SOLID, null,
+        BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, BorderStrokeStyle.SOLID, null,
                 new BorderWidths(1));
         Border border = new Border(borderStroke);
 
@@ -242,7 +252,8 @@ public class Board extends Application {
     public static void modifBordure(GridPane grille, int index, Boolean Nord, Boolean Est, Boolean Sud,
             Boolean Ouest) {
         if (Nord == true && Est == false && Sud == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.GREY, Color.GREY, Color.GREY,
+            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.LIGHTGREY, Color.LIGHTGREY,
+                    Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -250,7 +261,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Nord == true && Est == true && Sud == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.RED, Color.GREY, Color.GREY,
+            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.RED, Color.LIGHTGREY, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -258,7 +269,15 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Nord == true && Ouest == true && Sud == false && Est == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.GREY, Color.GREY, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.LIGHTGREY, Color.LIGHTGREY, Color.RED,
+                    BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
+                    null,
+                    new BorderWidths(1), new Insets(0));
+            Border border = new Border(borderStroke);
+            StackPane stackPane = getCenteredNodeGridPane(grille, index);
+            stackPane.setBorder(border);
+        } else if (Nord == true && Ouest == false && Sud == true && Est == false) {
+            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.LIGHTGREY, Color.RED, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -266,7 +285,8 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Est == true && Nord == false && Sud == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.GREY, Color.RED, Color.GREY, Color.GREY,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.RED, Color.LIGHTGREY,
+                    Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -274,7 +294,8 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Sud == true && Est == false && Nord == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.GREY, Color.GREY, Color.RED, Color.GREY,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.RED,
+                    Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -283,7 +304,7 @@ public class Board extends Application {
             stackPane.setBorder(border);
 
         } else if (Sud == true && Ouest == true && Nord == false && Est == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.GREY, Color.GREY, Color.RED, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.RED, Color.RED,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -292,7 +313,7 @@ public class Board extends Application {
             stackPane.setBorder(border);
 
         } else if (Sud == true && Est == true && Nord == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.GREY, Color.RED, Color.RED, Color.GREY,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.RED, Color.RED, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -301,7 +322,8 @@ public class Board extends Application {
             stackPane.setBorder(border);
 
         } else if (Ouest == true && Est == false && Sud == false && Nord == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.GREY, Color.GREY, Color.GREY, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.LIGHTGREY,
+                    Color.RED,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
