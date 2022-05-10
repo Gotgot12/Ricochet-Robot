@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Case extends Board {
     // Position
     private int x;
@@ -18,8 +20,12 @@ public class Case extends Board {
         this.Ouest = Ouest;
     }
 
-    public Boolean[] getBordure() {
-        Boolean[] bordure = { Nord, Est, Sud, Ouest };
+    public ArrayList<Boolean> getBordure() {
+        ArrayList<Boolean> bordure = new ArrayList<Boolean>(4);
+        bordure.add(Nord);
+        bordure.add(Est);
+        bordure.add(Sud);
+        bordure.add(Ouest);
         return bordure;
     }
 
@@ -30,8 +36,11 @@ public class Case extends Board {
         this.Ouest = Ouest;
     }
 
-    public int[] getPosition() {
-        int[] position = { x, y };
+    public ArrayList<Integer> getPosition() {
+        ArrayList<Integer> position = new ArrayList<Integer>(2);
+        position.add(x);
+        position.add(y);
+
         return position;
     }
 

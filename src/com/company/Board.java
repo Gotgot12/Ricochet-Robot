@@ -217,7 +217,19 @@ public class Board extends Application {
         setManualBordure(grille, listCase, 253, true, true, false, false);
 
         // Set Robot
-        createRobot(grille, 3, 5, Color.GREEN);
+
+        ArrayList<Robot> listRobot = new ArrayList<Robot>();
+        listRobot.add(new Robot(9, 9, Color.YELLOW));
+        createRobot(grille, listCase, 9, 9, Color.YELLOW);
+
+        listRobot.add(new Robot(5, 5, Color.BLUE));
+        createRobot(grille, listCase, 5, 5, Color.BLUE);
+
+        listRobot.add(new Robot(2, 2, Color.RED));
+        createRobot(grille, listCase, 2, 2, Color.RED);
+
+        listRobot.add(new Robot(0, 0, Color.GREEN));
+        createRobot(grille, listCase, 0, 0, Color.GREEN);
 
         // Set Objectifs
         setObjectif(grille, 3, 2, Color.YELLOW);
@@ -240,7 +252,11 @@ public class Board extends Application {
         setObjectif(grille, 10, 6, Color.GREEN);
         setObjectif(grille, 13, 11, Color.GREEN);
 
-        System.out.println(listCase.get(254).getPosition()[1]);
+        System.out.println(listCase.get(254).getBordure());
+        System.out.println(listRobot.get(0).getPosition());
+
+        allDeplacement(grille, listCase, listRobot.get(3), 2, 3);
+
         Scene scene = new Scene(grille);
         primaryStage.setTitle("Ricochet Robot");
         primaryStage.setScene(scene);
@@ -250,6 +266,81 @@ public class Board extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void allDeplacement(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+        deplacementRobotNord(grille, listCase, robot, x, y);
+        deplacementRobotEst(grille, listCase, robot, x, y);
+        deplacementRobotSud(grille, listCase, robot, x, y);
+        deplacementRobotOuest(grille, listCase, robot, x, y);
+    }
+
+    public static void deplacementRobotNord(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+        Case caseInit = listCase.get(positionToIndex(x, y));
+        while (caseInit.getBordure().get(0) == false) {
+            caseInit = listCase.get(positionToIndex(x, y - 1));
+            x = caseInit.getPosition().get(0);
+            y = caseInit.getPosition().get(1);
+            StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+
+            rectangle.opacityProperty().set(0.2);
+
+            stackPane.getChildren().add(rectangle);
+        }
+        System.out.println(caseInit.getPosition());
+        System.out.println(caseInit.getBordure());
+    }
+
+    public static void deplacementRobotEst(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+        Case caseInit = listCase.get(positionToIndex(x, y));
+        while (caseInit.getBordure().get(1) == false) {
+            caseInit = listCase.get(positionToIndex(x + 1, y));
+            x = caseInit.getPosition().get(0);
+            y = caseInit.getPosition().get(1);
+            StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+
+            rectangle.opacityProperty().set(0.2);
+
+            stackPane.getChildren().add(rectangle);
+        }
+        System.out.println(caseInit.getPosition());
+        System.out.println(caseInit.getBordure());
+    }
+
+    public static void deplacementRobotSud(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+        Case caseInit = listCase.get(positionToIndex(x, y));
+        while (caseInit.getBordure().get(2) == false) {
+            caseInit = listCase.get(positionToIndex(x, y + 1));
+            x = caseInit.getPosition().get(0);
+            y = caseInit.getPosition().get(1);
+            StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+
+            rectangle.opacityProperty().set(0.2);
+
+            stackPane.getChildren().add(rectangle);
+        }
+        System.out.println(caseInit.getPosition());
+        System.out.println(caseInit.getBordure());
+    }
+
+    public static void deplacementRobotOuest(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+        Case caseInit = listCase.get(positionToIndex(x, y));
+        while (caseInit.getBordure().get(3) == false) {
+            caseInit = listCase.get(positionToIndex(x - 1, y));
+            x = caseInit.getPosition().get(0);
+            y = caseInit.getPosition().get(1);
+            StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+
+            rectangle.opacityProperty().set(0.2);
+
+            stackPane.getChildren().add(rectangle);
+        }
+        System.out.println(caseInit.getPosition());
+        System.out.println(caseInit.getBordure());
     }
 
     public static void createBordure(GridPane grille, int x, int y) {
@@ -375,13 +466,45 @@ public class Board extends Application {
         modifBordure(grille, index, Nord, Est, Sud, Ouest);
     }
 
-    private static void createRobot(GridPane grille, int x, int y, Color color) {
+    private static void createRobot(GridPane grille, ArrayList<Case> listCase, int x, int y, Color color) {
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Circle cercle = new Circle(10, color);
         stackPane.getChildren().add(cercle);
 
-        new Robot(x, y, color);
+        // Mise en place des bordures sur les cases adjacentes aux robots initiales
+        // La "caseNord" = la case au dessus du robot.
+        // Ainsi la bordure à mettre en place est au sud de la caseNord
+        // La condition permet de vérifier que l'on sort pas du plateau
+        // Démarche similaire pour les autres
+        if (y - 1 >= 0) {
+            Case caseNord = listCase.get(positionToIndex(x, y - 1));
+            caseNord.setBordure(caseNord.getBordure().get(0), caseNord.getBordure().get(1),
+                    true, caseNord.getBordure().get(3));
+        }
+
+        if (x + 1 <= 15) {
+            Case caseEst = listCase.get(positionToIndex(x + 1, y));
+            caseEst.setBordure(caseEst.getBordure().get(0), caseEst.getBordure().get(1),
+                    caseEst.getBordure().get(2), true);
+        }
+
+        if (y + 1 <= 15) {
+            Case caseSud = listCase.get(positionToIndex(x, y + 1));
+            caseSud.setBordure(true, caseSud.getBordure().get(1),
+                    caseSud.getBordure().get(2), caseSud.getBordure().get(3));
+        }
+
+        if (x - 1 >= 0) {
+            Case caseOuest = listCase.get(positionToIndex(x - 1, y));
+            caseOuest.setBordure(caseOuest.getBordure().get(0),
+                    true, caseOuest.getBordure().get(2), caseOuest.getBordure().get(3));
+        }
+
     }
+
+    // private static void removeBordure(ArrayList<Case> listCase, int x, int y) {
+    // listCase.get(positionToIndex(x, y)).setBordure(false, false, false, false);
+    // }
 
     public static int positionToIndex(int x, int y) {
         return (16 * x + y);

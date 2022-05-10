@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import javafx.scene.paint.Color;
 
 public class Robot extends Board {
@@ -17,8 +19,11 @@ public class Robot extends Board {
         return color;
     }
 
-    public int[] getPosition() {
-        int[] position = { x, y };
+    public ArrayList<Integer> getPosition() {
+        ArrayList<Integer> position = new ArrayList<Integer>(2);
+        position.add(x);
+        position.add(y);
+
         return position;
     }
 
