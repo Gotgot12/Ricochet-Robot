@@ -1,12 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.w3c.dom.TypeInfo;
-
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -15,8 +11,8 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 
 public class Board extends Application {
@@ -220,7 +216,31 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 253, true, true, false, false);
 
-        System.out.println(listCase.get(4).getPosition()[1]);
+        // Set Robot
+        createRobot(grille, 3, 5, Color.GREEN);
+
+        // Set Objectifs
+        setObjectif(grille, 3, 2, Color.YELLOW);
+        setObjectif(grille, 4, 9, Color.YELLOW);
+        setObjectif(grille, 9, 1, Color.YELLOW);
+        setObjectif(grille, 10, 9, Color.YELLOW);
+
+        setObjectif(grille, 5, 3, Color.BLUE);
+        setObjectif(grille, 6, 12, Color.BLUE);
+        setObjectif(grille, 14, 5, Color.BLUE);
+        setObjectif(grille, 9, 13, Color.BLUE);
+
+        setObjectif(grille, 2, 4, Color.RED);
+        setObjectif(grille, 3, 14, Color.RED);
+        setObjectif(grille, 11, 3, Color.RED);
+        setObjectif(grille, 12, 11, Color.RED);
+
+        setObjectif(grille, 4, 5, Color.GREEN);
+        setObjectif(grille, 6, 13, Color.GREEN);
+        setObjectif(grille, 10, 6, Color.GREEN);
+        setObjectif(grille, 13, 11, Color.GREEN);
+
+        System.out.println(listCase.get(254).getPosition()[1]);
         Scene scene = new Scene(grille);
         primaryStage.setTitle("Ricochet Robot");
         primaryStage.setScene(scene);
@@ -235,6 +255,7 @@ public class Board extends Application {
     public static void createBordure(GridPane grille, int x, int y) {
         StackPane stackPane = new StackPane();
         Rectangle rectangle = new Rectangle();
+
         rectangle.setWidth(35);
         rectangle.setHeight(35);
 
@@ -246,13 +267,14 @@ public class Board extends Application {
 
         rectangle.setFill(Color.TRANSPARENT);
         stackPane.getChildren().add(rectangle);
+
         grille.add(stackPane, x, y);
     }
 
     public static void modifBordure(GridPane grille, int index, Boolean Nord, Boolean Est, Boolean Sud,
             Boolean Ouest) {
         if (Nord == true && Est == false && Sud == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.LIGHTGREY, Color.LIGHTGREY,
+            BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.LIGHTGREY, Color.LIGHTGREY,
                     Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
@@ -261,7 +283,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Nord == true && Est == true && Sud == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.RED, Color.LIGHTGREY, Color.LIGHTGREY,
+            BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.BLACK, Color.LIGHTGREY, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -269,7 +291,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Nord == true && Ouest == true && Sud == false && Est == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.LIGHTGREY, Color.LIGHTGREY, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.LIGHTGREY, Color.LIGHTGREY, Color.BLACK,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -277,7 +299,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Nord == true && Ouest == false && Sud == true && Est == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.LIGHTGREY, Color.RED, Color.LIGHTGREY,
+            BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.LIGHTGREY, Color.BLACK, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -285,7 +307,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Est == true && Nord == false && Sud == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.RED, Color.LIGHTGREY,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.BLACK, Color.LIGHTGREY,
                     Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
@@ -294,7 +316,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Sud == true && Est == false && Nord == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.BLACK,
                     Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
@@ -304,7 +326,7 @@ public class Board extends Application {
             stackPane.setBorder(border);
 
         } else if (Sud == true && Ouest == true && Nord == false && Est == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.RED, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.BLACK, Color.BLACK,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -313,7 +335,7 @@ public class Board extends Application {
             stackPane.setBorder(border);
 
         } else if (Sud == true && Est == true && Nord == false && Ouest == false) {
-            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.RED, Color.RED, Color.LIGHTGREY,
+            BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.BLACK, Color.BLACK, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -323,7 +345,7 @@ public class Board extends Application {
 
         } else if (Ouest == true && Est == false && Sud == false && Nord == false) {
             BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, Color.LIGHTGREY, Color.LIGHTGREY,
-                    Color.RED,
+                    Color.BLACK,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -331,7 +353,7 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         } else if (Nord == true && Est == true && Sud == true && Ouest == true) {
-            BorderStroke borderStroke = new BorderStroke(Color.RED, Color.RED, Color.RED, Color.RED,
+            BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
@@ -351,6 +373,25 @@ public class Board extends Application {
             Boolean Ouest) {
         listCase.get(index).setBordure(Nord, Est, Sud, Ouest);
         modifBordure(grille, index, Nord, Est, Sud, Ouest);
+    }
+
+    private static void createRobot(GridPane grille, int x, int y, Color color) {
+        StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+        Circle cercle = new Circle(10, color);
+        stackPane.getChildren().add(cercle);
+
+        new Robot(x, y, color);
+    }
+
+    public static int positionToIndex(int x, int y) {
+        return (16 * x + y);
+    }
+
+    private void setObjectif(GridPane grille, int x, int y, Color color) {
+        StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+        Rectangle rectangle = new Rectangle(30, 30, color);
+
+        stackPane.getChildren().add(rectangle);
     }
 
 }
