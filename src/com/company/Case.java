@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+// Création de la l'objet Case
+// Paramètres : x, y, bordureNord, bordureEst, BordureSud, BordureOuest
 public class Case extends Board {
     // Position
     private int x;
@@ -20,6 +22,7 @@ public class Case extends Board {
         this.Ouest = Ouest;
     }
 
+    // Méthode pour récupérer la liste des bordures de la case
     public ArrayList<Boolean> getBordure() {
         ArrayList<Boolean> bordure = new ArrayList<Boolean>(4);
         bordure.add(Nord);

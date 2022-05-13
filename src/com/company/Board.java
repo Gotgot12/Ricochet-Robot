@@ -19,12 +19,18 @@ public class Board extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
+        // Taille plateau
         final int boardSizeHorizontal = 16;
         final int boardSizeVertical = 16;
 
+        // Création de la grille pour le plateau
         GridPane grille = new GridPane();
+
+        // Création de la liste qui contiendra l'ensemble des objets Cases
         ArrayList<Case> listCase = new ArrayList<Case>();
 
+        // Création de l'ensemble des cases du jeu. Chaque case est ajouté à la liste
+        // listCase pour y accéder
         for (int i = 0; i < boardSizeHorizontal; i++) {
             for (int j = 0; j < boardSizeVertical; j++) {
                 listCase.add(new Case(i, j, false, false, false, false));
@@ -32,23 +38,30 @@ public class Board extends Application {
             }
         }
 
-        // Bordure sur l'ensemble des côtés du jeu
+        // Mise en place de la bordure sur l'ensemble des côtés du jeu
         for (int i = 0; i < 16; i++) {
+            // Bordure sur le côté gauche du plateau
             listCase.get(i).setBordure(false, false, false, true);
             modifBordure(grille, i, false, false, false, true);
+            // setManualBordure(grille, listCase, i, false, false, false, true);
 
+            // Bordure sur le côté droit du plateau
             listCase.get(255 - i).setBordure(false, true, false, false);
             modifBordure(grille, 255 - i, false, true, false, false);
+            // setManualBordure(grille, listCase, 255 - i, false, true, false, true);
         }
 
         for (int i = 0; i < 256; i += 16) {
+            // Bordure sur le côté nord du plateau
             listCase.get(i).setBordure(true, false, false, false);
             modifBordure(grille, i, true, false, false, false);
 
+            // Bordure sur le côté sud du plateau
             listCase.get(255 - i).setBordure(false, false, true, false);
             modifBordure(grille, 255 - i, false, false, true, false);
         }
 
+        // Configuration des murs sur les 4 coins
         listCase.get(0).setBordure(true, false, false, true);
         modifBordure(grille, 0, true, false, false, true);
 
@@ -216,8 +229,7 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 253, true, true, false, false);
 
-        // Set Robot
-
+        // Mise en place de la liste des robots et des robots
         ArrayList<Robot> listRobot = new ArrayList<Robot>();
         listRobot.add(new Robot(9, 9, Color.YELLOW));
         createRobot(grille, listCase, 9, 9, Color.YELLOW);
@@ -231,7 +243,7 @@ public class Board extends Application {
         listRobot.add(new Robot(0, 0, Color.GREEN));
         createRobot(grille, listCase, 0, 0, Color.GREEN);
 
-        // Set Objectifs
+        // Mise en place des objectifs sur le plateau
         setObjectif(grille, 3, 2, Color.YELLOW);
         setObjectif(grille, 4, 9, Color.YELLOW);
         setObjectif(grille, 9, 1, Color.YELLOW);
@@ -255,8 +267,9 @@ public class Board extends Application {
         System.out.println(listCase.get(254).getBordure());
         System.out.println(listRobot.get(0).getPosition());
 
-        allDeplacement(grille, listCase, listRobot.get(3), 2, 3);
+        allDeplacement(grille, listCase, listRobot.get(3), 4, 7);
 
+        // Créer la scène et faire apparaître la grille
         Scene scene = new Scene(grille);
         primaryStage.setTitle("Ricochet Robot");
         primaryStage.setScene(scene);
@@ -268,6 +281,8 @@ public class Board extends Application {
         launch(args);
     }
 
+    // Permet de visualiser tous les déplacements possibles avec en entrée la
+    // position de la case
     public static void allDeplacement(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
         deplacementRobotNord(grille, listCase, robot, x, y);
         deplacementRobotEst(grille, listCase, robot, x, y);
@@ -275,13 +290,25 @@ public class Board extends Application {
         deplacementRobotOuest(grille, listCase, robot, x, y);
     }
 
+    // Permet de visualiser les déplacements possibles vers le nord avec la position
+    // de la case en entrée
     public static void deplacementRobotNord(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+        // Trouve la case concernée par la position
         Case caseInit = listCase.get(positionToIndex(x, y));
+
+        // Tant qu'il n'y a pas de bordure au nord de la case, on continue la boucle (et
+        // on prend la case du dessus à chaque fois)
         while (caseInit.getBordure().get(0) == false) {
+            // On sélectionne la case du dessus de la case précédente
             caseInit = listCase.get(positionToIndex(x, y - 1));
             x = caseInit.getPosition().get(0);
             y = caseInit.getPosition().get(1);
+
+            // On récupère le noeud correspondant à cette nouvelle case
             StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+
+            // On crée un rectangle permettant à l'utilisateur de visualiser le déplacement
+            // possible
             Rectangle rectangle = new Rectangle(35, 35, Color.RED);
 
             rectangle.opacityProperty().set(0.2);
@@ -292,6 +319,7 @@ public class Board extends Application {
         System.out.println(caseInit.getBordure());
     }
 
+    // Même fonctionnement que deplacementRobotNord
     public static void deplacementRobotEst(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
         while (caseInit.getBordure().get(1) == false) {
@@ -309,6 +337,7 @@ public class Board extends Application {
         System.out.println(caseInit.getBordure());
     }
 
+    // Même fonctionnement que deplacementRobotNord
     public static void deplacementRobotSud(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
         while (caseInit.getBordure().get(2) == false) {
@@ -326,6 +355,7 @@ public class Board extends Application {
         System.out.println(caseInit.getBordure());
     }
 
+    // Même fonctionnement que deplacementRobotNord
     public static void deplacementRobotOuest(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
         while (caseInit.getBordure().get(3) == false) {
@@ -343,13 +373,19 @@ public class Board extends Application {
         System.out.println(caseInit.getBordure());
     }
 
+    // Créer la bordure initiale autour d'une case (en lightgrey)
     public static void createBordure(GridPane grille, int x, int y) {
+        // Mise en place de l'élément composé de la case -> on affiliera la bordure à ce
+        // noeud
         StackPane stackPane = new StackPane();
+
+        // Mise en place du rectangle permettant de faire choisir la taille de la case
         Rectangle rectangle = new Rectangle();
 
         rectangle.setWidth(35);
         rectangle.setHeight(35);
 
+        // Utilisation de l'objet BorderStroke pour créer la bordure
         BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, BorderStrokeStyle.SOLID, null,
                 new BorderWidths(1));
         Border border = new Border(borderStroke);
@@ -357,23 +393,38 @@ public class Board extends Application {
         stackPane.setBorder(border);
 
         rectangle.setFill(Color.TRANSPARENT);
+
+        // Ajout du rectangle au noeud
         stackPane.getChildren().add(rectangle);
 
+        // Ajout du noeud à la grille
         grille.add(stackPane, x, y);
     }
 
+    // Fonction pour mettre en place l'affichage des bordures sur le plateau
     public static void modifBordure(GridPane grille, int index, Boolean Nord, Boolean Est, Boolean Sud,
             Boolean Ouest) {
+        // Si il y a une bordure au nord et pas en est, sud et ouest ont rentre dans la
+        // condition
         if (Nord == true && Est == false && Sud == false && Ouest == false) {
+            // Utilisation de l'objet BorderStroke pour mettre en place la bordure visuel
+            // Paramètre de BorderStroke(couleurNord, couleurEst, couleurSud, couleurOuest,
+            // typeBordureNord, typeBordureEst, typeBordureSud, typeBordureOuest, null(jsp
+            // ce que c'est), tailleBordure, décallageIntérieurBordure)
             BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.LIGHTGREY, Color.LIGHTGREY,
                     Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
                     new BorderWidths(1), new Insets(0));
             Border border = new Border(borderStroke);
+
+            // On récupère le noeud associé à la case à laquelle il faut mettre la bordure
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
-        } else if (Nord == true && Est == true && Sud == false && Ouest == false) {
+
+        }
+        // Fonctionnement similaire pour les condtions suivantes
+        else if (Nord == true && Est == true && Sud == false && Ouest == false) {
             BorderStroke borderStroke = new BorderStroke(Color.BLACK, Color.BLACK, Color.LIGHTGREY, Color.LIGHTGREY,
                     BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
                     null,
@@ -455,17 +506,22 @@ public class Board extends Application {
 
     }
 
+    // Fonction pour récupérer le noeud associé à une position d'une case
     private static StackPane getCenteredNodeGridPane(GridPane gridPane, int index) {
         return (StackPane) gridPane.getChildren().get(index);
     }
 
+    // Fonction pour créer la bordure dans la logique et en visuel
     private static void setManualBordure(GridPane grille, ArrayList<Case> listCase, int index, Boolean Nord,
             Boolean Est, Boolean Sud,
             Boolean Ouest) {
+        // Modifier les bordures de la case sélectionnées
         listCase.get(index).setBordure(Nord, Est, Sud, Ouest);
         modifBordure(grille, index, Nord, Est, Sud, Ouest);
     }
 
+    // Fonction pour créer le robot au niveau visuel
+    // et les bordures initiales (en logique) autour du robot initial
     private static void createRobot(GridPane grille, ArrayList<Case> listCase, int x, int y, Color color) {
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Circle cercle = new Circle(10, color);
@@ -506,10 +562,13 @@ public class Board extends Application {
     // listCase.get(positionToIndex(x, y)).setBordure(false, false, false, false);
     // }
 
+    // Convertir une postion (x,y) en index pour connaître la case du tableau
+    // cf tableau excel pour comprendre
     public static int positionToIndex(int x, int y) {
         return (16 * x + y);
     }
 
+    // Fonction pour mettre en place le visuel d'un objectif
     private void setObjectif(GridPane grille, int x, int y, Color color) {
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Rectangle rectangle = new Rectangle(30, 30, color);
