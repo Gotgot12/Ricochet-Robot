@@ -2,8 +2,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -23,6 +25,9 @@ public class Board extends Application {
         final int boardSizeHorizontal = 16;
         final int boardSizeVertical = 16;
 
+        ArrayList<StackPane> listStackPane = new ArrayList<StackPane>();
+        ArrayList<Robot> listRobot = new ArrayList<Robot>();
+
         // Création de la grille pour le plateau
         GridPane grille = new GridPane();
 
@@ -34,7 +39,7 @@ public class Board extends Application {
         for (int i = 0; i < boardSizeHorizontal; i++) {
             for (int j = 0; j < boardSizeVertical; j++) {
                 listCase.add(new Case(i, j, false, false, false, false));
-                createBordure(grille, i, j);
+                createBordure(grille, listStackPane, i, j);
             }
         }
 
@@ -231,19 +236,51 @@ public class Board extends Application {
 
         ArrayList<Case> listCase2 = new ArrayList<Case>(listCase);
 
+        EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                System.out.println("yoo");
+                System.out.println(e.getSource());
+                System.out.println(e.getSource().toString().length());
+                String sousChaineGrande = "";
+                if (e.getSource().toString().length() > 15) {
+                    sousChaineGrande = e.getSource().toString().substring(13, 16);
+
+                }
+                String sousChaineMoyenne = e.getSource().toString().substring(13, 15);
+                String sousChainePetite = e.getSource().toString().substring(13, 14);
+
+                System.out.println("salut");
+                boolean integerOrNotGrand = sousChaineGrande.matches("-?\\d+");
+                System.out.println(integerOrNotGrand);
+                boolean integerOrNotMoyen = sousChaineMoyenne.matches("-?\\d+");
+                boolean integerOrNotPetit = sousChainePetite.matches("-?\\d+");
+
+                int index = -1;
+                if (integerOrNotGrand == true) {
+                    index = Integer.parseInt(sousChaineGrande);
+                } else if (integerOrNotMoyen == true) {
+                    index = Integer.parseInt(sousChaineMoyenne);
+                } else if (integerOrNotPetit == true) {
+                    index = Integer.parseInt(sousChainePetite);
+                }
+                allDeplacement(grille, listCase, indexToPosition(index).get(0), indexToPosition(index).get(1));
+            }
+
+        };
+
         // Mise en place de la liste des robots et des robots
-        ArrayList<Robot> listRobot = new ArrayList<Robot>();
-        listRobot.add(new Robot(9, 9, Color.YELLOW));
-        createRobot(grille, listCase2, 9, 9, Color.YELLOW);
+        listRobot.add(new Robot(14, 13, Color.YELLOW));
+        createRobot(grille, listCase2, 14, 13, Color.YELLOW, eventHandler);
 
         listRobot.add(new Robot(5, 5, Color.BLUE));
-        createRobot(grille, listCase2, 5, 5, Color.BLUE);
+        createRobot(grille, listCase2, 5, 5, Color.BLUE, eventHandler);
 
-        listRobot.add(new Robot(2, 2, Color.RED));
-        createRobot(grille, listCase2, 2, 2, Color.RED);
+        listRobot.add(new Robot(12, 13, Color.RED));
+        createRobot(grille, listCase2, 12, 13, Color.RED, eventHandler);
 
         listRobot.add(new Robot(0, 0, Color.GREEN));
-        createRobot(grille, listCase2, 0, 0, Color.GREEN);
+        createRobot(grille, listCase2, 0, 0, Color.GREEN, eventHandler);
 
         // Mise en place des objectifs sur le plateau
         setObjectif(grille, 3, 2, Color.YELLOW);
@@ -268,17 +305,18 @@ public class Board extends Application {
 
         System.out.println(listCase2.get(254).getBordure());
         System.out.println(listRobot.get(0).getPosition());
+        System.out.println(listStackPane.get(19).getId().getClass());
 
-        allDeplacement(grille, listCase2, listRobot.get(3), 2, 0);
-        allDeplacement(grille, listCase2, listRobot.get(3), 5, 9);
+        // allDeplacement(grille, listCase2, listRobot.get(3), 2, 0);
+        // allDeplacement(grille, listCase2, listRobot.get(3), 5, 9);
 
-        listRobot.get(2).setX(4);
-        listRobot.get(2).setY(4);
-        System.out.println(listRobot.get(2).getPosition());
-        removeRobot(grille, listCase, 9, 9, Color.YELLOW);
-        removeBordure(listCase, listCase2, 0, 0);
-        createRobot(grille, listCase, 4, 4, Color.YELLOW);
-        allDeplacement(grille, listCase2, listRobot.get(3), 3, 4);
+        // listRobot.get(2).setX(4);
+        // listRobot.get(2).setY(4);
+        // System.out.println(listRobot.get(2).getPosition());
+        // removeRobot(grille, listCase, 9, 9, Color.YELLOW);
+        // removeBordure(listCase, listCase2, 0, 0);
+        // createRobot(grille, listCase, 4, 4, Color.YELLOW);
+        // allDeplacement(grille, listCase2, listRobot.get(3), 3, 4);
         // allDeplacement(grille, listCase2, listRobot.get(3), 5, 9);
 
         // Créer la scène et faire apparaître la grille
@@ -295,16 +333,16 @@ public class Board extends Application {
 
     // Permet de visualiser tous les déplacements possibles avec en entrée la
     // position de la case
-    public static void allDeplacement(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
-        deplacementRobotNord(grille, listCase, robot, x, y);
-        deplacementRobotEst(grille, listCase, robot, x, y);
-        deplacementRobotSud(grille, listCase, robot, x, y);
-        deplacementRobotOuest(grille, listCase, robot, x, y);
+    public static void allDeplacement(GridPane grille, ArrayList<Case> listCase, int x, int y) {
+        deplacementRobotNord(grille, listCase, x, y);
+        deplacementRobotEst(grille, listCase, x, y);
+        deplacementRobotSud(grille, listCase, x, y);
+        deplacementRobotOuest(grille, listCase, x, y);
     }
 
     // Permet de visualiser les déplacements possibles vers le nord avec la position
     // de la case en entrée
-    public static void deplacementRobotNord(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+    public static void deplacementRobotNord(GridPane grille, ArrayList<Case> listCase, int x, int y) {
         // Trouve la case concernée par la position
         Case caseInit = listCase.get(positionToIndex(x, y));
 
@@ -319,77 +357,104 @@ public class Board extends Application {
             // On récupère le noeud correspondant à cette nouvelle case
             StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
 
-            // On crée un rectangle permettant à l'utilisateur de visualiser le déplacement
-            // possible
-            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+            if (stackPane.getChildren().size() == 1 || stackPane.getChildren().size() == 2) {
+                // On crée un rectangle permettant à l'utilisateur de visualiser le déplacement
+                // possible
+                Rectangle rectangle = new Rectangle(35, 35, Color.RED);
 
-            rectangle.opacityProperty().set(0.2);
+                rectangle.opacityProperty().set(0.2);
 
-            stackPane.getChildren().add(rectangle);
+                stackPane.getChildren().add(rectangle);
+            } else {
+                stackPane.getChildren().remove(stackPane.getChildren().get(stackPane.getChildren().size() - 1));
+            }
+
         }
         System.out.println(caseInit.getPosition());
         System.out.println(caseInit.getBordure());
     }
 
     // Même fonctionnement que deplacementRobotNord
-    public static void deplacementRobotEst(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+    public static void deplacementRobotEst(GridPane grille, ArrayList<Case> listCase, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
         while (caseInit.getBordure().get(1) == false) {
             caseInit = listCase.get(positionToIndex(x + 1, y));
             x = caseInit.getPosition().get(0);
             y = caseInit.getPosition().get(1);
             StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
-            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+            System.out.println(stackPane.getChildren());
 
-            rectangle.opacityProperty().set(0.2);
+            if (stackPane.getChildren().size() == 1 || stackPane.getChildren().size() == 2) {
+                // On crée un rectangle permettant à l'utilisateur de visualiser le déplacement
+                // possible
+                Rectangle rectangle = new Rectangle(35, 35, Color.RED);
 
-            stackPane.getChildren().add(rectangle);
+                rectangle.opacityProperty().set(0.2);
+
+                stackPane.getChildren().add(rectangle);
+            } else {
+                stackPane.getChildren().remove(stackPane.getChildren().get(stackPane.getChildren().size() - 1));
+            }
         }
         System.out.println(caseInit.getPosition());
         System.out.println(caseInit.getBordure());
     }
 
     // Même fonctionnement que deplacementRobotNord
-    public static void deplacementRobotSud(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+    public static void deplacementRobotSud(GridPane grille, ArrayList<Case> listCase, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
         while (caseInit.getBordure().get(2) == false) {
             caseInit = listCase.get(positionToIndex(x, y + 1));
             x = caseInit.getPosition().get(0);
             y = caseInit.getPosition().get(1);
             StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
-            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+            if (stackPane.getChildren().size() == 1 || stackPane.getChildren().size() == 2) {
+                // On crée un rectangle permettant à l'utilisateur de visualiser le déplacement
+                // possible
+                Rectangle rectangle = new Rectangle(35, 35, Color.RED);
 
-            rectangle.opacityProperty().set(0.2);
+                rectangle.opacityProperty().set(0.2);
 
-            stackPane.getChildren().add(rectangle);
+                stackPane.getChildren().add(rectangle);
+            } else {
+                stackPane.getChildren().remove(stackPane.getChildren().get(stackPane.getChildren().size() - 1));
+            }
         }
         System.out.println(caseInit.getPosition());
         System.out.println(caseInit.getBordure());
     }
 
     // Même fonctionnement que deplacementRobotNord
-    public static void deplacementRobotOuest(GridPane grille, ArrayList<Case> listCase, Robot robot, int x, int y) {
+    public static void deplacementRobotOuest(GridPane grille, ArrayList<Case> listCase, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
         while (caseInit.getBordure().get(3) == false) {
             caseInit = listCase.get(positionToIndex(x - 1, y));
             x = caseInit.getPosition().get(0);
             y = caseInit.getPosition().get(1);
             StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
-            Rectangle rectangle = new Rectangle(35, 35, Color.RED);
+            if (stackPane.getChildren().size() == 1 || stackPane.getChildren().size() == 2) {
+                // On crée un rectangle permettant à l'utilisateur de visualiser le déplacement
+                // possible
+                Rectangle rectangle = new Rectangle(35, 35, Color.RED);
 
-            rectangle.opacityProperty().set(0.2);
+                rectangle.opacityProperty().set(0.2);
 
-            stackPane.getChildren().add(rectangle);
+                stackPane.getChildren().add(rectangle);
+            } else {
+                stackPane.getChildren().remove(stackPane.getChildren().get(stackPane.getChildren().size() - 1));
+            }
         }
         System.out.println(caseInit.getPosition());
         System.out.println(caseInit.getBordure());
     }
 
     // Créer la bordure initiale autour d'une case (en lightgrey)
-    public static void createBordure(GridPane grille, int x, int y) {
+    public static void createBordure(GridPane grille, ArrayList listStackPane, int x, int y) {
         // Mise en place de l'élément composé de la case -> on affiliera la bordure à ce
         // noeud
         StackPane stackPane = new StackPane();
+        stackPane.setId(String.valueOf(positionToIndex(x, y)));
+        listStackPane.add(stackPane);
 
         // Mise en place du rectangle permettant de faire choisir la taille de la case
         Rectangle rectangle = new Rectangle();
@@ -534,10 +599,13 @@ public class Board extends Application {
 
     // Fonction pour créer le robot au niveau visuel
     // et les bordures initiales (en logique) autour du robot initial
-    private static void createRobot(GridPane grille, ArrayList<Case> listCase, int x, int y, Color color) {
+    private static void createRobot(GridPane grille, ArrayList<Case> listCase, int x, int y, Color color,
+            EventHandler eventHandler) {
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Circle cercle = new Circle(10, color);
         stackPane.getChildren().add(cercle);
+
+        stackPane.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
 
         // Mise en place des bordures sur les cases adjacentes aux robots initiales
         // La "caseNord" = la case au dessus du robot.
@@ -622,6 +690,13 @@ public class Board extends Application {
     // cf tableau excel pour comprendre
     public static int positionToIndex(int x, int y) {
         return (16 * x + y);
+    }
+
+    public static ArrayList<Integer> indexToPosition(int index) {
+        ArrayList<Integer> position = new ArrayList<Integer>();
+        position.add(Math.round(index / 16));
+        position.add(index % 16);
+        return position;
     }
 
     // Fonction pour mettre en place le visuel d'un objectif
