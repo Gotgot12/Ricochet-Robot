@@ -229,19 +229,21 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 253, true, true, false, false);
 
+        ArrayList<Case> listCase2 = new ArrayList<Case>(listCase);
+
         // Mise en place de la liste des robots et des robots
         ArrayList<Robot> listRobot = new ArrayList<Robot>();
         listRobot.add(new Robot(9, 9, Color.YELLOW));
-        createRobot(grille, listCase, 9, 9, Color.YELLOW);
+        createRobot(grille, listCase2, 9, 9, Color.YELLOW);
 
         listRobot.add(new Robot(5, 5, Color.BLUE));
-        createRobot(grille, listCase, 5, 5, Color.BLUE);
+        createRobot(grille, listCase2, 5, 5, Color.BLUE);
 
         listRobot.add(new Robot(2, 2, Color.RED));
-        createRobot(grille, listCase, 2, 2, Color.RED);
+        createRobot(grille, listCase2, 2, 2, Color.RED);
 
         listRobot.add(new Robot(0, 0, Color.GREEN));
-        createRobot(grille, listCase, 0, 0, Color.GREEN);
+        createRobot(grille, listCase2, 0, 0, Color.GREEN);
 
         // Mise en place des objectifs sur le plateau
         setObjectif(grille, 3, 2, Color.YELLOW);
@@ -264,10 +266,20 @@ public class Board extends Application {
         setObjectif(grille, 10, 6, Color.GREEN);
         setObjectif(grille, 13, 11, Color.GREEN);
 
-        System.out.println(listCase.get(254).getBordure());
+        System.out.println(listCase2.get(254).getBordure());
         System.out.println(listRobot.get(0).getPosition());
 
-        allDeplacement(grille, listCase, listRobot.get(3), 4, 7);
+        allDeplacement(grille, listCase2, listRobot.get(3), 2, 0);
+        allDeplacement(grille, listCase2, listRobot.get(3), 5, 9);
+
+        listRobot.get(2).setX(4);
+        listRobot.get(2).setY(4);
+        System.out.println(listRobot.get(2).getPosition());
+        removeRobot(grille, listCase, 9, 9, Color.YELLOW);
+        removeBordure(listCase, listCase2, 0, 0);
+        createRobot(grille, listCase, 4, 4, Color.YELLOW);
+        allDeplacement(grille, listCase2, listRobot.get(3), 3, 4);
+        // allDeplacement(grille, listCase2, listRobot.get(3), 5, 9);
 
         // Créer la scène et faire apparaître la grille
         Scene scene = new Scene(grille);
@@ -558,9 +570,53 @@ public class Board extends Application {
 
     }
 
-    // private static void removeBordure(ArrayList<Case> listCase, int x, int y) {
-    // listCase.get(positionToIndex(x, y)).setBordure(false, false, false, false);
-    // }
+    // Supprimer les bordures autour des robots lorsque celui a changé de position
+    private static void removeBordure(ArrayList<Case> listCaseInitial, ArrayList<Case> listeCase, int x, int y) {
+        if (y - 1 >= 0) {
+            Case caseNordInitial = listCaseInitial.get(positionToIndex(x, y - 1));
+            Case caseNord = listeCase.get(positionToIndex(x, y - 1));
+            System.out.println(caseNordInitial);
+            if (caseNordInitial.getBordure().get(2) == false) {
+                caseNord.setBordure(caseNord.getBordure().get(0), caseNord.getBordure().get(1),
+                        false, caseNord.getBordure().get(3));
+            }
+        }
+
+        if (x + 1 <= 15) {
+            Case caseEstInitial = listCaseInitial.get(positionToIndex(x + 1, y));
+            Case caseEst = listeCase.get(positionToIndex(x + 1, y));
+            if (caseEstInitial.getBordure().get(3) == false) {
+                caseEst.setBordure(caseEst.getBordure().get(0), caseEst.getBordure().get(1),
+                        caseEst.getBordure().get(2), false);
+            }
+        }
+
+        if (y + 1 <= 15) {
+            Case caseSudInitial = listCaseInitial.get(positionToIndex(x, y + 1));
+            Case caseSud = listeCase.get(positionToIndex(x, y + 1));
+            if (caseSudInitial.getBordure().get(2) == false) {
+                caseSud.setBordure(false, caseSud.getBordure().get(1),
+                        caseSud.getBordure().get(2), caseSud.getBordure().get(3));
+            }
+        }
+
+        if (x - 1 >= 0) {
+            Case caseOuestInitial = listCaseInitial.get(positionToIndex(x - 1, y));
+            Case caseOuest = listeCase.get(positionToIndex(x - 1, y));
+            if (caseOuestInitial.getBordure().get(2) == false) {
+                caseOuest.setBordure(caseOuest.getBordure().get(0), false,
+                        caseOuest.getBordure().get(2), caseOuest.getBordure().get(3));
+            }
+        }
+
+    }
+
+    // Supprimer le visuel du robot à la case le mettre lorsque que celui-ci a
+    // changé de place
+    public static void removeRobot(GridPane grille, ArrayList<Case> listCase, int x, int y, Color color) {
+        StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
+        stackPane.getChildren().remove(stackPane.getChildren().get(1));
+    }
 
     // Convertir une postion (x,y) en index pour connaître la case du tableau
     // cf tableau excel pour comprendre
