@@ -451,30 +451,8 @@ public class Board extends Application {
 
             @Override
             public void handle(MouseEvent e) {
-                String sousChaineGrande = "";
-
-                if (e.getSource().toString().length() > 15) {
-                    sousChaineGrande = e.getSource().toString().substring(13, 16);
-                }
-                String sousChaineMoyenne = e.getSource().toString().substring(13, 15);
-                String sousChainePetite = e.getSource().toString().substring(13, 14);
-
-                boolean integerOrNotGrand = sousChaineGrande.matches("-?\\d+");
-                boolean integerOrNotMoyen = sousChaineMoyenne.matches("-?\\d+");
-                boolean integerOrNotPetit = sousChainePetite.matches("-?\\d+");
-
-                int index = -1;
-                if (integerOrNotGrand == true) {
-                    index = Integer.parseInt(sousChaineGrande);
-                } else if (integerOrNotMoyen == true) {
-                    index = Integer.parseInt(sousChaineMoyenne);
-                } else if (integerOrNotPetit == true) {
-                    index = Integer.parseInt(sousChainePetite);
-                }
-
                 allDeplacement(grille, listCaseInitial, listCase, listRobot, listObjectif,
                         newX, newY, objectifDuJeu);
-
             }
         };
 
