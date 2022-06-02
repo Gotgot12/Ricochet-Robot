@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 import javafx.scene.paint.Color;
 
-public class Objectif extends Board {
+public class Objectif {
 
     private int x;
     private int y;
@@ -32,6 +32,10 @@ public class Objectif extends Board {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
 }

@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 // Création de l'objet Robot
 // Paramètres : x, y (position initale), couleur 
-public class Robot extends Board {
+public class Robot {
 
     private int x;
     private int y;

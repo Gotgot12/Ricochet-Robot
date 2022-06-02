@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 // Création de la l'objet Case
 // Paramètres : x, y, bordureNord, bordureEst, BordureSud, BordureOuest
-public class Case extends Board {
+public class Case {
     // Position
     private int x;
     private int y;

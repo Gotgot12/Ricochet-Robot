@@ -280,6 +280,7 @@ public class Board extends Application {
         Objectif objectifDuJeu = listObjectif.get(nb);
         setObjectif(grille, objectifDuJeu.getPosition().get(0), objectifDuJeu.getPosition().get(1),
                 objectifDuJeu.getColor());
+        listObjectif.remove(nb);
 
         EventHandler<MouseEvent> clickRobot = new EventHandler<MouseEvent>() {
             @Override
@@ -305,7 +306,7 @@ public class Board extends Application {
                     index = Integer.parseInt(sousChainePetite);
                 }
 
-                allDeplacement(grille, listCase, listCase2, listRobot,
+                allDeplacement(grille, listCase, listCase2, listRobot, listObjectif,
                         indexToPosition(index).get(0),
                         indexToPosition(index).get(1), objectifDuJeu);
             }
@@ -339,7 +340,7 @@ public class Board extends Application {
     // Permet de visualiser tous les déplacements possibles avec en entrée la
     // position de la case
     public static void allDeplacement(GridPane grille, ArrayList<Case> listCaseInitial, ArrayList<Case> listCase,
-            ArrayList<Robot> listRobot, int x, int y, Objectif objectifDuJeu) {
+            ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int x, int y, Objectif objectifDuJeu) {
 
         ArrayList<Integer> deplacementPossibleNord = deplacementRobotNord(grille, listCase, x, y);
         ArrayList<Integer> deplacementPossibleEst = deplacementRobotEst(grille, listCase, x, y);
@@ -425,7 +426,7 @@ public class Board extends Application {
                 // - 1));
                 // }
 
-                deplacerRobot(grille, listCaseInitial, listCase, listRobot, x, y,
+                deplacerRobot(grille, listCaseInitial, listCase, listRobot, listObjectif, x, y,
                         indexToPosition(index).get(0),
                         indexToPosition(index).get(1), objectifDuJeu);
             }
@@ -439,7 +440,7 @@ public class Board extends Application {
     }
 
     public static void deplacerRobot(GridPane grille, ArrayList<Case> listCaseInitial, ArrayList<Case> listCase,
-            ArrayList<Robot> listRobot, int oldX,
+            ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int oldX,
             int oldY, int newX, int newY, Objectif objectifDuJeu) {
 
         Color colorRobot = Color.WHITE;
@@ -455,6 +456,20 @@ public class Board extends Application {
         if (objectifDuJeu.getPosition().get(0) == newX && objectifDuJeu.getPosition().get(1) == newY
                 && colorRobot == objectifDuJeu.getColor()) {
             System.out.println("LETS GOOOOOOO");
+            Random random = new Random();
+            // int nb = random.nextInt(listObjectif.size());
+            int nb = random.nextInt(1);
+            Objectif nouveauObjectifDuJeu = listObjectif.get(nb);
+            objectifDuJeu.setX(nouveauObjectifDuJeu.getPosition().get(0));
+            objectifDuJeu.setY(nouveauObjectifDuJeu.getPosition().get(1));
+            objectifDuJeu.setColor(nouveauObjectifDuJeu.getColor());
+            StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(newX, newY));
+            stackPane.getChildren().remove(stackPane.getChildren().size() - 1);
+
+            setObjectif(grille, objectifDuJeu.getPosition().get(0), objectifDuJeu.getPosition().get(1),
+                    objectifDuJeu.getColor());
+            listObjectif.remove(nb);
+
         }
 
         EventHandler<MouseEvent> clickRobot = new EventHandler<MouseEvent>() {
@@ -482,7 +497,8 @@ public class Board extends Application {
                     index = Integer.parseInt(sousChainePetite);
                 }
 
-                allDeplacement(grille, listCaseInitial, listCase, listRobot, newX, newY, objectifDuJeu);
+                allDeplacement(grille, listCaseInitial, listCase, listRobot, listObjectif,
+                        newX, newY, objectifDuJeu);
 
             }
         };
@@ -870,7 +886,7 @@ public class Board extends Application {
     }
 
     // Fonction pour mettre en place le visuel d'un objectif
-    private void setObjectif(GridPane grille, int x, int y, Color color) {
+    private static void setObjectif(GridPane grille, int x, int y, Color color) {
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Rectangle rectangle = new Rectangle(30, 30, color);
 
