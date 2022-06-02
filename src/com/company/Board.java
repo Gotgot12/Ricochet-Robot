@@ -274,8 +274,7 @@ public class Board extends Application {
         listObjectif.add(new Objectif(13, 11, Color.GREEN));
 
         Random random = new Random();
-        // int nb = random.nextInt(listObjectif.size());
-        int nb = random.nextInt(1);
+        int nb = random.nextInt(listObjectif.size());
 
         Objectif objectifDuJeu = listObjectif.get(nb);
         setObjectif(grille, objectifDuJeu.getPosition().get(0), objectifDuJeu.getPosition().get(1),
@@ -401,30 +400,6 @@ public class Board extends Application {
                 caseOuestPossible.getChildren()
                         .remove(caseOuestPossible.getChildren().get(caseOuestPossible.getChildren().size()
                                 - 1));
-                // if (Integer.parseInt(caseNordPossible.getId()) != index) {
-                // caseNordPossible.setOnMouseClicked(null);
-                // caseNordPossible.getChildren()
-                // .remove(caseNordPossible.getChildren().get(caseNordPossible.getChildren().size()
-                // - 1));
-                // }
-                // if (Integer.parseInt(caseEstPossible.getId()) != index) {
-                // caseEstPossible.setOnMouseClicked(null);
-                // caseEstPossible.getChildren()
-                // .remove(caseEstPossible.getChildren().get(caseEstPossible.getChildren().size()
-                // - 1));
-                // }
-                // if (Integer.parseInt(caseSudPossible.getId()) != index) {
-                // caseSudPossible.setOnMouseClicked(null);
-                // caseSudPossible.getChildren()
-                // .remove(caseSudPossible.getChildren().get(caseSudPossible.getChildren().size()
-                // - 1));
-                // }
-                // if (Integer.parseInt(caseOuestPossible.getId()) != index) {
-                // caseOuestPossible.setOnMouseClicked(null);
-                // caseOuestPossible.getChildren()
-                // .remove(caseOuestPossible.getChildren().get(caseOuestPossible.getChildren().size()
-                // - 1));
-                // }
 
                 deplacerRobot(grille, listCaseInitial, listCase, listRobot, listObjectif, x, y,
                         indexToPosition(index).get(0),
@@ -457,8 +432,8 @@ public class Board extends Application {
                 && colorRobot == objectifDuJeu.getColor()) {
             System.out.println("LETS GOOOOOOO");
             Random random = new Random();
-            // int nb = random.nextInt(listObjectif.size());
-            int nb = random.nextInt(1);
+            int nb = random.nextInt(listObjectif.size());
+
             Objectif nouveauObjectifDuJeu = listObjectif.get(nb);
             objectifDuJeu.setX(nouveauObjectifDuJeu.getPosition().get(0));
             objectifDuJeu.setY(nouveauObjectifDuJeu.getPosition().get(1));
@@ -526,24 +501,6 @@ public class Board extends Application {
 
             compteur += 1;
 
-            // On récupère le noeud correspondant à cette nouvelle case
-            // StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
-
-            // if (stackPane.getChildren().size() == 1 || stackPane.getChildren().size() ==
-            // 2) {
-            // // On crée un rectangle permettant à l'utilisateur de visualiser le
-            // déplacement
-            // // possible
-            // Rectangle rectangle = new Rectangle(35, 35, Color.RED);
-
-            // rectangle.opacityProperty().set(0.2);
-
-            // stackPane.getChildren().add(rectangle);
-            // } else {
-            // stackPane.getChildren().remove(stackPane.getChildren().get(stackPane.getChildren().size()
-            // - 1));
-            // }
-
         }
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Rectangle rectangle = new Rectangle(35, 35, Color.WHITE);
@@ -565,13 +522,15 @@ public class Board extends Application {
     public static ArrayList<Integer> deplacementRobotEst(GridPane grille, ArrayList<Case> listCase, int x, int y) {
         Case caseInit = listCase.get(positionToIndex(x, y));
 
-        int compteur = 1;
+        int compteur = 0;
 
         while (caseInit.getBordure().get(1) == false) {
             caseInit = listCase.get(positionToIndex(x + 1, y));
 
             x = caseInit.getPosition().get(0);
             y = caseInit.getPosition().get(1);
+
+            compteur += 1;
         }
 
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
