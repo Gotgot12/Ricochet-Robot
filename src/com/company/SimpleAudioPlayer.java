@@ -41,8 +41,6 @@ public class SimpleAudioPlayer {
 
     public static void main() {
         try {
-            // filePath =
-            // "C:/Users/gauth/Documents/Gauthier/ISEP/A1/Cours/Algo_Prog/Ricochet-Robot2/sound/RequiemforaDream.wav";
             SimpleAudioPlayer audioPlayer = new SimpleAudioPlayer();
 
             audioPlayer.play();
