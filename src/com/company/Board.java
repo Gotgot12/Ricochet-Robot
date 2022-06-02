@@ -22,10 +22,8 @@ public class Board extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        SimpleAudioPlayer.main();
 
-        // InputParser.nombreJoueur();
-
-        // Taille plateau
         final int boardSizeHorizontal = 16;
         final int boardSizeVertical = 16;
 
@@ -251,7 +249,6 @@ public class Board extends Application {
         }
 
         // Mise en place des objectifs sur le plateau
-        listObjectif.add(new Objectif(5, 0, Color.GREEN));
 
         listObjectif.add(new Objectif(3, 2, Color.YELLOW));
         listObjectif.add(new Objectif(4, 9, Color.YELLOW));

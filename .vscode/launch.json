@@ -6,17 +6,18 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch Board",
+            "request": "launch",
+            "mainClass": "Board",
+            "vmArgs": "--module-path C:/Users/gauth/Documents/Gauthier/ISEP/A1/Cours/Algo_Prog/javafx-sdk-18.0.1/lib --add-modules javafx.controls,javafx.fxml",
+            "projectName": "Ricochet-Robot_f977699"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "vmArgs": "--module-path C:/Users/gauth/Documents/Gauthier/ISEP/A1/Cours/Algo_Prog/javafx-sdk-18.0.1/lib --add-modules javafx.controls,javafx.fxml",
             "mainClass": "${file}"
         },
-        {
-            "type": "java",
-            "name": "Launch Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "Ricochet-Robot_f977699"
-        }
     ]
 }
