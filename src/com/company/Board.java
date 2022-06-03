@@ -26,11 +26,15 @@ public class Board extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        // SimpleAudioPlayer.main();
 
+        // Lancer la musique au départ du jeu
+        SimpleAudioPlayer.main();
+
+        // Définir la taille du plateau
         final int boardSizeHorizontal = 16;
         final int boardSizeVertical = 16;
 
+        // Création des listes pour gérer le jeu
         ArrayList<StackPane> listStackPane = new ArrayList<StackPane>();
         ArrayList<Robot> listRobot = new ArrayList<Robot>();
         ArrayList<Objectif> listObjectif = new ArrayList<Objectif>();
@@ -41,6 +45,7 @@ public class Board extends Application {
         // Création de la liste qui contiendra l'ensemble des objets Cases
         ArrayList<Case> listCase = new ArrayList<Case>();
 
+        // Mise en place du compteur
         ArrayList<Integer> compteurCoup = new ArrayList<Integer>();
         compteurCoup.add(0);
 
@@ -58,12 +63,10 @@ public class Board extends Application {
             // Bordure sur le côté gauche du plateau
             listCase.get(i).setBordure(false, false, false, true);
             modifBordure(grille, i, false, false, false, true);
-            // setManualBordure(grille, listCase, i, false, false, false, true);
 
             // Bordure sur le côté droit du plateau
             listCase.get(255 - i).setBordure(false, true, false, false);
             modifBordure(grille, 255 - i, false, true, false, false);
-            // setManualBordure(grille, listCase, 255 - i, false, true, false, true);
         }
 
         for (int i = 0; i < 256; i += 16) {
@@ -244,6 +247,8 @@ public class Board extends Application {
 
         setManualBordure(grille, listCase, 253, true, true, false, false);
 
+        // Création de la liste de case composé des bordures + objectifs + robots
+        // Copie par valeur de listeCase
         ArrayList<Case> listCase2 = new ArrayList<Case>();
         for (int i = 0; i < boardSizeHorizontal; i++) {
             for (int j = 0; j < boardSizeVertical; j++) {
@@ -256,7 +261,6 @@ public class Board extends Application {
         }
 
         // Mise en place des objectifs sur le plateau
-
         listObjectif.add(new Objectif(3, 2, Color.YELLOW));
         listObjectif.add(new Objectif(4, 9, Color.YELLOW));
         listObjectif.add(new Objectif(9, 1, Color.YELLOW));
@@ -277,22 +281,30 @@ public class Board extends Application {
         listObjectif.add(new Objectif(10, 6, Color.GREEN));
         listObjectif.add(new Objectif(13, 11, Color.GREEN));
 
+        // Générer un nombre aléatoire pour choisir l'objectif parmi la liste créée
         Random random = new Random();
         int nb = random.nextInt(listObjectif.size());
 
+        // On choisit l'objectif
         Objectif objectifDuJeu = listObjectif.get(nb);
         setObjectif(grille, objectifDuJeu.getPosition().get(0), objectifDuJeu.getPosition().get(1),
                 objectifDuJeu.getColor());
+        // On retire l'objectif de la liste pour ne pas retomber dessus
         listObjectif.remove(nb);
 
         StackPane stackPaneGlobal = new StackPane();
+        // Mise en place du compteur sur l'interface graphique
         Text textCompteur = new Text();
         textCompteur.setText(String.valueOf(compteurCoup.get(0)));
         textCompteur.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 35));
 
+        // Création de l'évènement s'exécutant au clic du robot pour la prédiction des
+        // déplacements
         EventHandler<MouseEvent> clickRobot = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+
+                // Récupération de l'ID du stackPane sélectionné
                 String sousChaineGrande = "";
 
                 if (e.getSource().toString().length() > 15) {
@@ -314,11 +326,34 @@ public class Board extends Application {
                     index = Integer.parseInt(sousChainePetite);
                 }
 
+                // On prédit les déplacements possibles
                 allDeplacement(grille, textCompteur, listCase, listCase2, listRobot, listObjectif,
                         indexToPosition(index).get(0),
                         indexToPosition(index).get(1), objectifDuJeu, compteurCoup);
             }
         };
+
+        // Début de code pour randomiser la position des robots au départ
+
+        // for (int i = 0; i < 4; i++) {
+        // Random randomRobot = new Random();
+        // int xRd = randomRobot.nextInt(16);
+        // int yRd = randomRobot.nextInt(16);
+        // Color color;
+        // if (i == 0) {
+        // color = Color.YELLOW;
+        // } else if (i == 1) {
+        // color = Color.BLUE;
+        // } else if (i == 2) {
+        // color = Color.RED;
+        // } else {
+        // color = Color.GREEN;
+        // }
+
+        // listRobot.add(new Robot(xRd, yRd, color));
+        // createRobot(grille, listCase2, xRd, yRd, Color.YELLOW, clickRobot);
+
+        // }
 
         // Mise en place de la liste des robots et des robots
         listRobot.add(new Robot(14, 13, Color.YELLOW));
@@ -354,11 +389,13 @@ public class Board extends Application {
             ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int x, int y, Objectif objectifDuJeu,
             ArrayList<Integer> compteurCoup) {
 
+        // On récupère la position des cases où le déplacement est possible
         ArrayList<Integer> deplacementPossibleNord = deplacementRobotNord(grille, listCase, x, y);
         ArrayList<Integer> deplacementPossibleEst = deplacementRobotEst(grille, listCase, x, y);
         ArrayList<Integer> deplacementPossibleSud = deplacementRobotSud(grille, listCase, x, y);
         ArrayList<Integer> deplacementPossibleOuest = deplacementRobotOuest(grille, listCase, x, y);
 
+        // On récupère le stackPane de la case où le déplacement est possible
         StackPane caseNordPossible = getCenteredNodeGridPane(grille,
                 positionToIndex(deplacementPossibleNord.get(0), deplacementPossibleNord.get(1)));
 
@@ -371,9 +408,12 @@ public class Board extends Application {
         StackPane caseOuestPossible = getCenteredNodeGridPane(grille,
                 positionToIndex(deplacementPossibleOuest.get(0), deplacementPossibleOuest.get(1)));
 
+        // Evènmenent qui se lance lorsque l'on déplace le robot
         EventHandler<MouseEvent> clickCaseToMoveRobot = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+
+                // On récupère l'index du stackPane sélectionné
                 String sousChaineGrande = "";
                 if (e.getSource().toString().length() > 15) {
                     sousChaineGrande = e.getSource().toString().substring(13, 16);
@@ -394,6 +434,9 @@ public class Board extends Application {
                     index = Integer.parseInt(sousChainePetite);
                 }
 
+                // Pour chacune des cases, on désactive l'évènement des cases de déplacement
+                // possible car le choix de la case a été réalisé (et on la retire
+                // graphiquement)
                 caseNordPossible.setOnMouseClicked(null);
                 caseNordPossible.getChildren()
                         .remove(caseNordPossible.getChildren().get(caseNordPossible.getChildren().size()
@@ -414,12 +457,14 @@ public class Board extends Application {
                         .remove(caseOuestPossible.getChildren().get(caseOuestPossible.getChildren().size()
                                 - 1));
 
+                // On exécute la fonction permettant le déplacement du robot
                 deplacerRobot(grille, textCompteur, listCaseInitial, listCase, listRobot, listObjectif, x, y,
                         indexToPosition(index).get(0),
                         indexToPosition(index).get(1), objectifDuJeu, compteurCoup);
             }
         };
 
+        // On met en place l'évènement sur les cases où le déplacement est possible
         caseNordPossible.setOnMouseClicked(clickCaseToMoveRobot);
         caseEstPossible.setOnMouseClicked(clickCaseToMoveRobot);
         caseSudPossible.setOnMouseClicked(clickCaseToMoveRobot);
@@ -427,17 +472,22 @@ public class Board extends Application {
 
     }
 
+    // Permet de déplacer le robot graphiquement et logiquement
     public static void deplacerRobot(GridPane grille, Text textCompteur, ArrayList<Case> listCaseInitial,
             ArrayList<Case> listCase,
             ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int oldX,
             int oldY, int newX, int newY, Objectif objectifDuJeu, ArrayList<Integer> compteurCoup) {
 
+        // Augmente le compteur de 1 et l'affiche graphiquement
         compteurCoup.get(0);
         compteurCoup.add(compteurCoup.get(0) + 1);
         compteurCoup.remove(0);
         textCompteur.setText(String.valueOf(compteurCoup.get(0)));
 
         Color colorRobot = Color.WHITE;
+
+        // On récupère le robot sélectionné par le déplacement et on le déplace à sa
+        // nouvelle case
         for (int i = 0; i < listRobot.size(); i++) {
             if ((listRobot.get(i).getPosition().get(0) == oldX) && (listRobot.get(i).getPosition().get(1) == oldY)) {
                 listRobot.get(i).setX(newX);
@@ -447,15 +497,22 @@ public class Board extends Application {
             }
         }
 
+        // On vérifie si la case sélectionnée et celle de l'objectif final (avec la
+        // bonne couleur)
         if (objectifDuJeu.getPosition().get(0) == newX && objectifDuJeu.getPosition().get(1) == newY
                 && colorRobot == objectifDuJeu.getColor()) {
             System.out.println("LETS GOOOOOOO");
+
+            // On affiche le nombre de coups final
             System.out.println(compteurCoup.get(0));
+
+            // On remet à 0 le compteur
             textCompteur.setText(String.valueOf(compteurCoup.get(0)));
             compteurCoup.add(0);
             compteurCoup.remove(0);
             textCompteur.setText(String.valueOf(compteurCoup.get(0)));
 
+            // On choisit aléatoirement un nouvel objectif dans la liste
             Random random = new Random();
             int nb = random.nextInt(listObjectif.size());
 
@@ -472,6 +529,8 @@ public class Board extends Application {
 
         }
 
+        // On remet en place l'évenèment pour visualiser les déplacements possibles au
+        // clic sur le robot
         EventHandler<MouseEvent> clickRobot = new EventHandler<MouseEvent>() {
 
             @Override
@@ -481,8 +540,14 @@ public class Board extends Application {
             }
         };
 
+        // On retire graphiquement le robot de son ancienne case
         removeRobot(grille, listCase, oldX, oldY, clickRobot);
+
+        // On retire logiquement les bordure de l'ancienne case (car le robot s'est
+        // déplacé)
         removeBordure(listCaseInitial, listCase, oldX, oldY);
+
+        // On créé graphiquement le nouveau robot sur sa nouvelle case
         createRobot(grille, listCase, newX, newY, colorRobot, clickRobot);
     }
 
@@ -505,6 +570,8 @@ public class Board extends Application {
             compteur += 1;
 
         }
+
+        // On affiche un rectangle rouge si le déplacement est possible à cette case
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Rectangle rectangle = new Rectangle(35, 35, Color.WHITE);
         if (compteur > 0) {
@@ -513,10 +580,13 @@ public class Board extends Application {
         rectangle.opacityProperty().set(0.2);
         stackPane.getChildren().add(rectangle);
 
+        // Retire le rectangle de déplacement possible lorsque l'on reclique sur le
+        // robot
         if (stackPane.getChildren().size() == 4) {
             stackPane.getChildren().remove(stackPane.getChildren().size() - 1);
         }
 
+        // On retourne la position de la case possible
         return caseInit.getPosition();
 
     }
@@ -757,10 +827,13 @@ public class Board extends Application {
     // et les bordures initiales (en logique) autour du robot initial
     private static void createRobot(GridPane grille, ArrayList<Case> listCase, int x, int y, Color color,
             EventHandler<MouseEvent> clickRobot) {
+
+        // On crée graphiquement un nouveau robot
         StackPane stackPane = getCenteredNodeGridPane(grille, positionToIndex(x, y));
         Circle cercle = new Circle(10, color);
         stackPane.getChildren().add(cercle);
 
+        // On ajoute à ce robot (et donc au stackPane lié l'évènment du clic)
         stackPane.setOnMouseClicked(clickRobot);
 
         // Mise en place des bordures sur les cases adjacentes aux robots initiales
@@ -866,6 +939,7 @@ public class Board extends Application {
         return (16 * x + y);
     }
 
+    // Convertir un index (de à à 256 en position [x,y])
     public static ArrayList<Integer> indexToPosition(int index) {
         ArrayList<Integer> position = new ArrayList<Integer>();
         position.add(Math.round(index / 16));

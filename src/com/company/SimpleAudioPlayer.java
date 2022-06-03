@@ -1,6 +1,3 @@
-
-// Java program to play an Audio
-// file using Clip Object
 import java.io.File;
 import java.io.IOException;
 
@@ -12,28 +9,23 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SimpleAudioPlayer {
 
-    // to store current position
-    Long currentFrame;
     Clip clip;
 
-    // current status of clip
-    String status;
-
     AudioInputStream audioInputStream;
-    static String filePath;
 
-    // constructor to initialize streams and clip
+    // Initialiser les streams et les clips
     public SimpleAudioPlayer()
             throws UnsupportedAudioFileException,
             IOException, LineUnavailableException {
-        // create AudioInputStream object
+
+        // Créer AudioInputStream objet
         audioInputStream = AudioSystem
                 .getAudioInputStream(new File("sound/RequiemforaDream.wav").getAbsoluteFile());
 
-        // create clip reference
+        // Créer une référence de clip
         clip = AudioSystem.getClip();
 
-        // open audioInputStream to the clip
+        // Ouvrir audioInputStream
         clip.open(audioInputStream);
 
         clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -53,11 +45,9 @@ public class SimpleAudioPlayer {
         }
     }
 
-    // Method to play the audio
+    // Jouer le son
     public void play() {
-        // start the clip
+        // Commencer le clip
         clip.start();
     }
-
-    // Method to resume the audio
 }
