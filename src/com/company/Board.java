@@ -16,13 +16,17 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Board extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        SimpleAudioPlayer.main();
+        // SimpleAudioPlayer.main();
 
         final int boardSizeHorizontal = 16;
         final int boardSizeVertical = 16;
@@ -36,6 +40,9 @@ public class Board extends Application {
 
         // Création de la liste qui contiendra l'ensemble des objets Cases
         ArrayList<Case> listCase = new ArrayList<Case>();
+
+        ArrayList<Integer> compteurCoup = new ArrayList<Integer>();
+        compteurCoup.add(0);
 
         // Création de l'ensemble des cases du jeu. Chaque case est ajouté à la liste
         // listCase pour y accéder
@@ -278,6 +285,11 @@ public class Board extends Application {
                 objectifDuJeu.getColor());
         listObjectif.remove(nb);
 
+        StackPane stackPaneGlobal = new StackPane();
+        Text textCompteur = new Text();
+        textCompteur.setText(String.valueOf(compteurCoup.get(0)));
+        textCompteur.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 35));
+
         EventHandler<MouseEvent> clickRobot = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -302,9 +314,9 @@ public class Board extends Application {
                     index = Integer.parseInt(sousChainePetite);
                 }
 
-                allDeplacement(grille, listCase, listCase2, listRobot, listObjectif,
+                allDeplacement(grille, textCompteur, listCase, listCase2, listRobot, listObjectif,
                         indexToPosition(index).get(0),
-                        indexToPosition(index).get(1), objectifDuJeu);
+                        indexToPosition(index).get(1), objectifDuJeu, compteurCoup);
             }
         };
 
@@ -321,8 +333,10 @@ public class Board extends Application {
         listRobot.add(new Robot(0, 0, Color.GREEN));
         createRobot(grille, listCase2, 0, 0, Color.GREEN, clickRobot);
 
+        stackPaneGlobal.getChildren().addAll(textCompteur, grille);
+
         // Créer la scène et faire apparaître la grille
-        Scene scene = new Scene(grille);
+        Scene scene = new Scene(stackPaneGlobal);
         primaryStage.setTitle("Ricochet Robot");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -335,8 +349,10 @@ public class Board extends Application {
 
     // Permet de visualiser tous les déplacements possibles avec en entrée la
     // position de la case
-    public static void allDeplacement(GridPane grille, ArrayList<Case> listCaseInitial, ArrayList<Case> listCase,
-            ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int x, int y, Objectif objectifDuJeu) {
+    public static void allDeplacement(GridPane grille, Text textCompteur, ArrayList<Case> listCaseInitial,
+            ArrayList<Case> listCase,
+            ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int x, int y, Objectif objectifDuJeu,
+            ArrayList<Integer> compteurCoup) {
 
         ArrayList<Integer> deplacementPossibleNord = deplacementRobotNord(grille, listCase, x, y);
         ArrayList<Integer> deplacementPossibleEst = deplacementRobotEst(grille, listCase, x, y);
@@ -398,9 +414,9 @@ public class Board extends Application {
                         .remove(caseOuestPossible.getChildren().get(caseOuestPossible.getChildren().size()
                                 - 1));
 
-                deplacerRobot(grille, listCaseInitial, listCase, listRobot, listObjectif, x, y,
+                deplacerRobot(grille, textCompteur, listCaseInitial, listCase, listRobot, listObjectif, x, y,
                         indexToPosition(index).get(0),
-                        indexToPosition(index).get(1), objectifDuJeu);
+                        indexToPosition(index).get(1), objectifDuJeu, compteurCoup);
             }
         };
 
@@ -411,9 +427,15 @@ public class Board extends Application {
 
     }
 
-    public static void deplacerRobot(GridPane grille, ArrayList<Case> listCaseInitial, ArrayList<Case> listCase,
+    public static void deplacerRobot(GridPane grille, Text textCompteur, ArrayList<Case> listCaseInitial,
+            ArrayList<Case> listCase,
             ArrayList<Robot> listRobot, ArrayList<Objectif> listObjectif, int oldX,
-            int oldY, int newX, int newY, Objectif objectifDuJeu) {
+            int oldY, int newX, int newY, Objectif objectifDuJeu, ArrayList<Integer> compteurCoup) {
+
+        compteurCoup.get(0);
+        compteurCoup.add(compteurCoup.get(0) + 1);
+        compteurCoup.remove(0);
+        textCompteur.setText(String.valueOf(compteurCoup.get(0)));
 
         Color colorRobot = Color.WHITE;
         for (int i = 0; i < listRobot.size(); i++) {
@@ -428,6 +450,12 @@ public class Board extends Application {
         if (objectifDuJeu.getPosition().get(0) == newX && objectifDuJeu.getPosition().get(1) == newY
                 && colorRobot == objectifDuJeu.getColor()) {
             System.out.println("LETS GOOOOOOO");
+            System.out.println(compteurCoup.get(0));
+            textCompteur.setText(String.valueOf(compteurCoup.get(0)));
+            compteurCoup.add(0);
+            compteurCoup.remove(0);
+            textCompteur.setText(String.valueOf(compteurCoup.get(0)));
+
             Random random = new Random();
             int nb = random.nextInt(listObjectif.size());
 
@@ -448,8 +476,8 @@ public class Board extends Application {
 
             @Override
             public void handle(MouseEvent e) {
-                allDeplacement(grille, listCaseInitial, listCase, listRobot, listObjectif,
-                        newX, newY, objectifDuJeu);
+                allDeplacement(grille, textCompteur, listCaseInitial, listCase, listRobot, listObjectif,
+                        newX, newY, objectifDuJeu, compteurCoup);
             }
         };
 
@@ -598,6 +626,7 @@ public class Board extends Application {
         // Utilisation de l'objet BorderStroke pour créer la bordure
         BorderStroke borderStroke = new BorderStroke(Color.LIGHTGREY, BorderStrokeStyle.SOLID, null,
                 new BorderWidths(1));
+
         Border border = new Border(borderStroke);
 
         stackPane.setBorder(border);
@@ -713,7 +742,6 @@ public class Board extends Application {
             StackPane stackPane = getCenteredNodeGridPane(grille, index);
             stackPane.setBorder(border);
         }
-
     }
 
     // Fonction pour créer la bordure dans la logique et en visuel
