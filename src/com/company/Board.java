@@ -38,14 +38,14 @@ public class Board extends Application {
         // Création de la grille pour le plateau
         GridPane grille = new GridPane();
 
-        // Création de la liste qui contiendra l'ensemble des objets Cases
+        // Création de la liste qui contiendra l'ensemble des objets Cases.
         ArrayList<Case> listCase = new ArrayList<Case>();
 
         ArrayList<Integer> compteurCoup = new ArrayList<Integer>();
         compteurCoup.add(0);
 
         // Création de l'ensemble des cases du jeu. Chaque case est ajouté à la liste
-        // listCase pour y accéder
+        // listCase pour y accéder.
         for (int i = 0; i < boardSizeHorizontal; i++) {
             for (int j = 0; j < boardSizeVertical; j++) {
                 listCase.add(new Case(i, j, false, false, false, false));
@@ -53,25 +53,25 @@ public class Board extends Application {
             }
         }
 
-        // Mise en place de la bordure sur l'ensemble des côtés du jeu
+        // Mise en place de la bordure sur l'ensemble des côtés du jeu.
         for (int i = 0; i < 16; i++) {
             // Bordure sur le côté gauche du plateau
             listCase.get(i).setBordure(false, false, false, true);
             modifBordure(grille, i, false, false, false, true);
             // setManualBordure(grille, listCase, i, false, false, false, true);
 
-            // Bordure sur le côté droit du plateau
+            // Bordure sur le côté droit du plateau.
             listCase.get(255 - i).setBordure(false, true, false, false);
             modifBordure(grille, 255 - i, false, true, false, false);
             // setManualBordure(grille, listCase, 255 - i, false, true, false, true);
         }
 
         for (int i = 0; i < 256; i += 16) {
-            // Bordure sur le côté nord du plateau
+            // Bordure sur le côté nord du plateau.
             listCase.get(i).setBordure(true, false, false, false);
             modifBordure(grille, i, true, false, false, false);
 
-            // Bordure sur le côté sud du plateau
+            // Bordure sur le côté sud du plateau.
             listCase.get(255 - i).setBordure(false, false, true, false);
             modifBordure(grille, 255 - i, false, false, true, false);
         }
